@@ -1,0 +1,41 @@
+pipeline {
+    agent {
+        label 'worker'
+    }
+
+    environment {
+        my_aws_cred = credentials('aws-cred')
+    }
+
+    tools {
+        terraform 'tf'
+    }
+
+    stages {
+
+        stage('Checkout'){
+            steps{
+                git 'https://github.com/mayurpandit25/student-management.git'
+                echo "Clonning is successful"
+            }
+        }
+
+        stage('Terraform - Init'){
+            steps {
+                sh 'terraform init'
+            }
+        }
+
+        stage('Terraform - validate'){
+            steps {
+                sh 'terraform validate'
+            }
+        }
+
+        stage('Terraform - Apply'){
+            steps {
+                sh 'terraform apply -auto-approve'
+            }
+        }
+    }
+}
